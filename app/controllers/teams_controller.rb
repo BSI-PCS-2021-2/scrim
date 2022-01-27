@@ -23,6 +23,7 @@ class TeamsController < ApplicationController
         @favorite = Favorite.new()
         @favorites = Favorite.all.select {|t|t.user == current_user}
         @invite = Invite.new()
+        @chat_room = ChatRoom.new()
         @my_teams = Team.all.select { |t|
             t.user == current_user
         }
@@ -75,6 +76,21 @@ class TeamsController < ApplicationController
         end
         @team.grade = grade/@team.evaluations.count
         @team.save
+    end
+
+    def transfer_team
+        @teams = Team.all.select { |t|
+            t.user == current_user
+        }
+        @users = User.all
+        @transfer = { :team => 3, :user => 1 }
+    end
+
+    def team_transf
+        @team = Team.find(params[:team].to_i)
+        @team.user_id = params[:user].to_i
+        @team.save
+        redirect_to teams_path()
     end
 
     private
